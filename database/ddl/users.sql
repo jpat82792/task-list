@@ -3,6 +3,8 @@ CREATE TABLE users (
   email VARCHAR(255) UNIQUE NOT NULL,
   first_name VARCHAR(35) DEFAULT NULL,
   last_name VARCHAR(35) DEFAULT NULL,
-  password VARCHAR(30) NOT NULL,
+  password TEXT NOT NULL,
   user_id BIGSERIAL PRIMARY KEY
 );
+
+ALTER TABLE users OWNER TO task_list_admin;
