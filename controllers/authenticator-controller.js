@@ -33,16 +33,15 @@ module.exports = function(app)
   passport.serializeUser(function(user, done){
     console.log("serialize");
     console.log(user);
-    done(null, user[0].user_id);
+    done(null, user.user_id);
   });
   passport.deserializeUser(function(id, done){
-    user.getUserById(id)
+    require('./user-controller.js').getUserById(id)
       .then((e) =>{
         console.log("deser");
         console.log(e);
         if(e === null)
-        {
-          
+        {       
           done(new Error('Wrong user id'));
         }
         done(null, user);

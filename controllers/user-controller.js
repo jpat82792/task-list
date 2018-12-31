@@ -27,4 +27,5 @@ const getUserById = async function(id)
   return db.query(getUserByIdQuery,parameters );
 }
 
-module.exports = {"setUser":setUser, "getUser": getUser};
+module.exports = {"setUser":setUser, "getUser": getUser, 
+"getUserById": getUserById};
