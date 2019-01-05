@@ -9,6 +9,9 @@ import { TaskListRoutingModule } from './task-list-routing/task-list-routing.mod
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { LoginComponent } from './login/login.component';
 import { EditorComponent } from './editor/editor.component';
+import { TaskComponent } from './task/task.component';
+import { NoteComponent } from './note/note.component';
+import { TaskPromptComponent } from './task-prompt/task-prompt.component';
 
 @NgModule({
   declarations: [
@@ -16,7 +19,10 @@ import { EditorComponent } from './editor/editor.component';
     SignUpComponent,
     DashboardComponent,
     LoginComponent,
-    EditorComponent
+    EditorComponent,
+    TaskComponent,
+    NoteComponent,
+    TaskPromptComponent
   ],
   imports: [
   BrowserModule,
