@@ -8,7 +8,7 @@ const getUserByIdQuery = "SELECT * FROM users where user_id=$(id)";
 const setUser = async function(username, email, password)
 {
   console.log("setUser()");
-  const values = {"username":username, "email": email, "password": password};
+  const values = {"username":username, "email":username, "password": password};
   var result = db.query(setUserQuery, values);
   return result;
 };
@@ -24,7 +24,7 @@ const getUser = async function(username, email, password)
 const getUserById = async function(id)
 {
   const parameters = {"id": id};
-  return db.query(getUserByIdQuery,parameters );
+  return db.query(getUserByIdQuery,parameters);
 }
 
 module.exports = {"setUser":setUser, "getUser": getUser, 

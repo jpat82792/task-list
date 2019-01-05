@@ -8,13 +8,15 @@ import { SignUpComponent } from './sign-up/sign-up.component';
 import { TaskListRoutingModule } from './task-list-routing/task-list-routing.module';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { LoginComponent } from './login/login.component';
+import { EditorComponent } from './editor/editor.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     SignUpComponent,
     DashboardComponent,
-    LoginComponent
+    LoginComponent,
+    EditorComponent
   ],
   imports: [
   BrowserModule,

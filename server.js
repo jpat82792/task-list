@@ -3,13 +3,14 @@ const express = require('express');
 const path = require('path');
 const http = require('http');
 const bodyParser = require('body-parser');
-
+const dbConfig = require('./constants/db-config');
+const morgan = require('morgan');
 // Get our API routes
 const api = require('./routes/api');
 const app = express();
 const expressSession = require('express-session');
 app.use(expressSession({
-  secret:'NotImportantYet',
+  secret:dbConfig.secret,
   resave:false,
   saveUninitialized:false
 }));
@@ -23,7 +24,6 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.engine('html', require('ejs').renderFile);
 app.set('view engine', 'html');
 // Point static path to dist
-app.use('/api',express.static(path.join(__dirname, 'views')));
 app.use('/',express.static(path.join(__dirname, 'dist/task-list')));
 
 
@@ -31,17 +31,7 @@ app.use('/',express.static(path.join(__dirname, 'dist/task-list')));
 app.use('/api',api);
 
 app.all('*',function(req, res, next){
- console.log("HELLO!!!!");
-  if(req.isAuthenticated())
-  {
-    console.log("req.isauthenti");
-    console.log(req.isAuthenticated());
-    res.redirect('/sign-up');
-  }
-  else{
-    console.log("Req not auth");
-    res.redirect('/api/login');
-  }
+  res.render(path.join(__dirname, 'dist/task-list'));
 });
 
 /**

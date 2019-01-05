@@ -1,6 +1,10 @@
 const passport = require('passport'),
-      LocalStrategy = require('passport-local').Strategy;
+      jwtStrategy = require('passport-jwt').Strategy,
+      extractJwt = require('passport-jwt').ExtractJwt;
+
 const user = require('./user-controller.js');
+const dbConfig = require('../constants/db-config.js');
+
 const isAuth = async function(username, password){
   return user.getUser(username, username, password);
 }
@@ -9,10 +13,13 @@ module.exports = function(app)
 {
   app.use(passport.initialize());
   app.use(passport.session());
+  var opts = {};
+  opts.jwtFromRequest = extractJwt.fromAuthHeaderWithScheme('jwt');
+  opts.secretOrKey = dbConfig.secret;
 
-  passport.use(new LocalStrategy(
-        function(username, password, done){
-          var result = isAuth(username, password);
+  passport.use(new jwtStrategy(opts,
+        function(jwt_payload, done){
+          var result = isAuth(jwt_payload.username, jwt_payload.password);
           result.then((e)=>{
             console.log(e);
             if(e.length ===1)
