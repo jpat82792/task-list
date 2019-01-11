@@ -2,4 +2,8 @@
   dashboard works!
 </p>
 <app-editor></app-editor>
-<app-note></app-note>
+<section class="notes-section">
+	<app-note *ngFor="let note of notes" [note]="note">
+	</app-note>	
+</section>
+

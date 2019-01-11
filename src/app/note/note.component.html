@@ -1,12 +1,13 @@
 <div class="note">
   <div class="tasks">
-  	<h1>List title</h1>
+  	<h1>{{note.title}}</h1>
     <div class="tasks active">
-    	<app-task></app-task>
-    	<app-task-prompt></app-task-prompt>
+    	<app-task *ngFor="let incompleteTask of incompleteTasks" [task]="incompleteTask"></app-task>
+    	<app-task-prompt [tasks]="incompleteTasks"></app-task-prompt>
     </div>
     <div class="tasks inactive">
-    	<app-task></app-task>
+    	<app-task *ngFor="let completeTask of completeTasks" [task]="completeTask"></app-task>
     </div>
   </div>
+  <button class="save note-save" (click)="save()">save</button>
 </div>

@@ -1,12 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { TaskComponent } from '../task/task.component';
-
+import { Task } from '../classes/task';
 @Component({
   selector: 'app-task-prompt',
   templateUrl: './task-prompt.component.html',
   styleUrls: ['./task-prompt.component.less']
 })
 export class TaskPromptComponent implements OnInit {
+
+  @Input() tasks: Task[];
 
   constructor() { }
 
@@ -16,9 +18,7 @@ export class TaskPromptComponent implements OnInit {
   addTask(event, item):void
   {
   	console.log("addTask()");
-  	console.log(this);
-  	console.log(event);
-  	console.log(item);
+    this.tasks.push(new Task(false, ""));
   }
 
 }
