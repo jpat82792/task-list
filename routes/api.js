@@ -1,9 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/user-controller.js');
+const noteController = require('../controllers/note-controller.js');
 const passport = require('passport');
 const jwt = require('jsonwebtoken');
-const dbConfig = require('../constants/db-config.js');
+const dbConfig = require('../constants/db-config');
+const routingUtils = require('../controllers/routingUtils');
 /* GET api listing. */
 router.get('/', (req, res) => {
   res.send('api works');
@@ -15,11 +17,15 @@ router.get('/hey', (req, res) => {
 router.get('/login', (req, res)=>{
   res.render('login.html',{});
 });
+router.post('/notes', (req, res, next) => {
+  noteController.apiSetNote(req,res,next);
+});
 router.get('/loginState', passport.authenticate('jwt',{session: false}),
   function(req, res){
-    console.log("Token:");
-    var token = getToken(req.headers);
-    console.log(token);
+    var token = routingUtils.getToken(req.headers);
+    console.log("loginState()");
+    console.log(req.user);
+    console.log("Yes it worked");
     if(token){
       res.status(200).json({success: true, msg:'Logged in'});
     }
@@ -34,10 +40,10 @@ router.post('/login', (req, res, next)=>{
   var user = userController.getUser(req.body.username, req.body.username, req.body.password);
   user.then((e) => {
     console.log("YAY, user");
-    console.log(e);
+    console.log(e[0]);
         var token = jwt.sign(e[0], dbConfig.secret);
     // return the information including token as JSON
-    res.json({success: true, token: 'JWT ' + token});
+    res.json({success: true, token: 'JWT ' + token, userId: e[0]});
   })
   .catch((e)=>{
    
@@ -68,18 +74,5 @@ router.post('/user', (req, res) =>{
     res.redirect('/sign-up');
   });
 });
-var getToken = function (headers) {
-  console.log("getToken()");
-  if (headers && headers.authorization) {
-    var parted = headers.authorization.split(' ');
-    if (parted.length === 2) {
-      return parted[1];
-    } else {
-      return null;
-    }
-  } else {
-    return null;
-  }
-};
 
 module.exports = router;

@@ -1,12 +1,13 @@
 <div class="note">
+  <button (click)="delete()" class="delete delete-note">x</button>
   <div class="tasks">
   	<h1>{{note.title}}</h1>
     <div class="tasks active">
-    	<app-task *ngFor="let incompleteTask of incompleteTasks" [task]="incompleteTask"></app-task>
+    	<app-task *ngFor="let incompleteTask of incompleteTasks" [task]="incompleteTask" [incompleteTasks]="incompleteTasks" [completeTasks]=completeTasks></app-task>
     	<app-task-prompt [tasks]="incompleteTasks"></app-task-prompt>
     </div>
     <div class="tasks inactive">
-    	<app-task *ngFor="let completeTask of completeTasks" [task]="completeTask"></app-task>
+    	<app-task *ngFor="let completeTask of completeTasks" [task]="completeTask"  [incompleteTasks]="incompleteTasks" [completeTasks]=completeTasks></app-task>
     </div>
   </div>
   <button class="save note-save" (click)="save()">save</button>

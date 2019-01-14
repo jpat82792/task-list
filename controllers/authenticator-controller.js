@@ -40,7 +40,7 @@ module.exports = function(app)
   passport.serializeUser(function(user, done){
     console.log("serialize");
     console.log(user);
-    done(null, user.user_id);
+    done(null, user);
   });
   passport.deserializeUser(function(id, done){
     require('./user-controller.js').getUserById(id)

@@ -17,7 +17,7 @@ import { Note } from '../classes/note';
 export class DashboardComponent implements OnInit, AfterViewInit {
 
   @ViewChild("findme") findme: TemplateRef<any>;
-  notes: Note[] = [new Note("list", "first list", "Do this&#x2404;&#x7;Do this after that")];
+  notes: Note[] = [new Note("list", "first list", "Do this&#x2404;&#x7;Do this after that", "list")];
   constructor(private http: HttpClient, private router: Router) { }
 
   ngOnInit() {
@@ -28,10 +28,17 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     }, err =>{
         this.router.navigate(['logon']);
     });
-    console.log(this.notes[0].title);
   }
   ngAfterViewInit(){
     console.log(this.findme);
+  }
+  //TODO: Add message for event that deleteIndex == -1
+  deleteNote(note: Note): void{
+    console.log("deleteNote()");
+    let deleteIndex = this.notes.indexOf(note);
+    if(deleteIndex !== -1){
+      this.notes.splice(deleteIndex, 1);
+    }
   }
 
 }
