@@ -15,6 +15,11 @@ export class NoteService {
     'User':localStorage.getItem('user'),
   	'Content-Type': 'application/json'
   })};
+  httpDeleteHeaders = {headers: new HttpHeaders({
+    'Authorization': localStorage.getItem('jwtToken'),
+    'User':localStorage.getItem('user'),
+    'Content-Type': 'text'
+  })};
   constructor(private http: HttpClient) { }
 
   private handleError(error: HttpErrorResponse){
@@ -22,10 +27,10 @@ export class NoteService {
   		console.error('An error occurred: ', error.error.message);
   	}
   	else{
-  	  console.error('Backend returned code ${error.status}',error);
+  	  console.error('Backend returned code ',error.headers);
   	}
-    console.error(error.error);
-  	return throwError("This request has failed  ${{error.status}}");
+    console.error("Error-status: ", error.statusText, "Error-type: ",error.type, "Error: ",error.error,)
+  	return throwError("This request has failed  "+error.status);
   }
 
   getNotes(): Observable<any>{
@@ -44,10 +49,21 @@ export class NoteService {
   }
 
   updateNote(note: Note): Observable<any>{
-    let updateRoute = this.createNote+'/'+note.id;
+    const updateRoute = this.createNote+'/'+note.id;
     return this.http.patch<any>(updateRoute, {data:{note: note}}, this.httpHeaders)
       .pipe(
         catchError(this.handleError)
       );
+  }
+
+  deleteNote(note: Note): Observable<any>{
+    console.log("note service delete note");
+    console.log(note);
+    const deleteRoute = this.createNote+'/'+note.id;
+    console.log(deleteRoute);
+    return this.http.delete(deleteRoute,  this.httpHeaders)
+    .pipe(
+      catchError(this.handleError)
+    );
   }
 }

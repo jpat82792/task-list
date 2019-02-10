@@ -5,6 +5,9 @@ const setNoteQuery = "INSERT INTO notes(user_id, title, type, body) VALUES ($(us
 const updateNoteQuery = "UPDATE notes set body=$(body), title=$(title) WHERE "+
  "user_id=$(userId) AND note_id=$(note_id)";
 
+ const deleteNoteQuery = " DELETE FROM notes where NOTE_ID=$(noteId) and "+
+  " user_id=$(userId) ";
+
 const db = pgp(dbConfig.database);
 
 var getNotes = async function(userId){
@@ -33,7 +36,8 @@ var apiGetNotes = function(req, res, next){
 
 var setNote =  async function(user, note){
 	console.log("setNote()");
-	const values = {userId: user.user_id, title: note.title, type: note.category, body: note.body};
+	const values = {userId: user.user_id, title: note.title, type: note.category, 
+		body: note.body};
 	var result = db.query(setNoteQuery, values);
 	return result;
 }
@@ -91,4 +95,23 @@ var updateNote = async function(user, note){
 		return result;
 }
 
-module.exports = {apiSetNote:apiSetNote, apiUpdateNote: apiUpdateNote,apiGetNotes:apiGetNotes};
+var apiDeleteNote = function(req, res, next){
+	console.log("apiDeleteNote()");
+	const noteId = req.params.id;
+	const userId = JSON.parse(req.headers.user);
+	deleteNote(noteId, userId.user_id).then((result)=>{
+		res.status(200).json({success: true});
+	})
+	.catch((err)=>{
+		console.log(err);
+		res.status(400).json({sucess: false});
+	});
+}
+
+var deleteNote = async function(noteId, userId){
+	const params = {noteId: noteId, userId: userId};
+	let result = db.query(deleteNoteQuery, params);
+	return result;
+}
+module.exports = {apiSetNote:apiSetNote, apiUpdateNote: apiUpdateNote,
+	apiGetNotes:apiGetNotes, apiDeleteNote: apiDeleteNote};

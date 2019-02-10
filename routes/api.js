@@ -7,6 +7,22 @@ const jwt = require('jsonwebtoken');
 const dbConfig = require('../constants/db-config');
 const routingUtils = require('../controllers/routingUtils');
 /* GET api listing. */
+
+
+router.delete('/notes/:id', (req, res, next)=>{
+  console.log("really?")
+  let token = routingUtils.getToken(req.headers);
+  console.log("Note delete route");
+  if(token){
+    noteController.apiDeleteNote(req, res, next);
+  }
+  else{
+    console.log("error");
+    res.sendStatus(401);
+  }
+});
+
+
 router.get('/', (req, res) => {
   res.send('api works');
 });
@@ -26,7 +42,7 @@ router.get('/notes', (req, res, next)=>{
   else{
     res.sendStatus(401);
   }
-})
+});
 
 router.patch('/notes/:id', (req, res, next)=>{
   var token = routingUtils.getToken(req.headers);
@@ -49,10 +65,8 @@ router.post('/notes', (req, res, next) => {
     console.log("error");
     res.sendStatus(401);
   }
-
-
-  
 });
+
 router.get('/loginState', passport.authenticate('jwt',{session: false}),
   function(req, res){
     var token = routingUtils.getToken(req.headers);

@@ -57,10 +57,17 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   //TODO: Add message for event that deleteIndex == -1
   deleteNote(note: Note): void{
     console.log("deleteNote()");
-    let deleteIndex = this.notes.indexOf(note);
-    if(deleteIndex !== -1){
-      this.notes.splice(deleteIndex, 1);
-    }
+    let con = this;
+    let index = this.notes.indexOf(note);
+    this.noteService.deleteNote(note).subscribe((result)=>{
+      if(result.success){
+        con.notes.splice(index,1);
+      }
+      else{
+        //TODO add error message here;
+      }
+    });
+
   }
 
 }
