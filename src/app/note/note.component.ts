@@ -17,29 +17,78 @@ export class NoteComponent implements OnInit {
 	incompleteTasks: Array<Task> = [];
 	completeTasks: Array<Task> = [];
   @Input() dash: DashboardComponent;
-
+  separator: string = "&#x2404;";
+  falseParse: string = "&#x7;";
 
   constructor(private noteService: NoteService) {
    }
 
-  ngOnInit() {
+  ngOnInit(){
 
   	this.setTasks();
   }
+
+  recordTasks(){
+    var con = this;
+    this.note.body = "";
+
+    this.incompleteTasks.forEach(function(val){
+      if(val.complete){
+        con.note.body+= val.body+con.separator;
+        console.log(con.note.body);
+      }
+      else{
+        con.note.body += con.falseParse+ val.body+ con.separator;
+        console.log(con.note.body);  
+      }
+    });
+
+    this.completeTasks.forEach(function(val){
+      if(val.complete){
+        con.note.body+= val.body+con.separator;
+        console.log(con.note.body);
+      }
+      else{
+        con.note.body += con.falseParse+ val.body+ con.separator;
+        console.log(con.note.body);  
+      }
+    });
+  }
+
   save(): void
   {
   	console.log("Note->Save()");
-    this.noteService.setNote(this.note).subscribe(ok => console.log(ok));
+    this.recordTasks();
+    var con = this;
+    let note = this.note;
+    if(note.id === -1){
+      con.postNote(con);
+    }
+    else{
+      con.patchNote(con);
+    }
   }
 
-  delete(): void
-  {
+  patchNote(con: any): void{
+    this.noteService.updateNote(this.note).subscribe(ok => {
+      console.log("patchNote()");
+    });
+  }
+
+  postNote(con: any): void{
+    this.noteService.setNote(this.note).subscribe(ok => {
+      console.log(ok);
+      con.note.id = ok.result.note_id;
+      console.log(con.note);
+    });
+  }
+
+  delete(): void{
     console.log("Note->delete()");
     this.dash.deleteNote(this.note);
   }
 
-  setTasks()
-  {
+  setTasks(){
   	console.log("setTasks()");
   	var con = this;
   	var body: string[] = this.note.body.split("&#x2404;");

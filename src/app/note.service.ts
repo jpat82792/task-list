@@ -12,6 +12,7 @@ export class NoteService {
   createNote: string = 'api/notes';
   httpHeaders = {headers: new HttpHeaders({
   	'Authorization': localStorage.getItem('jwtToken'),
+    'User':localStorage.getItem('user'),
   	'Content-Type': 'application/json'
   })};
   constructor(private http: HttpClient) { }
@@ -21,17 +22,32 @@ export class NoteService {
   		console.error('An error occurred: ', error.error.message);
   	}
   	else{
-  	  console.error('Backend returned code ${error.status}',error.error.status);
+  	  console.error('Backend returned code ${error.status}',error);
   	}
     console.error(error.error);
   	return throwError("This request has failed  ${{error.status}}");
   }
 
+  getNotes(): Observable<any>{
+    return this.http.get<any>(this.createNote, this.httpHeaders)
+      .pipe(
+        catchError(this.handleError)
+      );
+  }
+
   setNote (note: Note): Observable<any>
   {
-  	return this.http.post<any>(this.createNote, {data:{note: note}})
+  	return this.http.post<any>(this.createNote, {data:{note: note}}, this.httpHeaders)
   	  .pipe(
   	    catchError(this.handleError)
   	  );
+  }
+
+  updateNote(note: Note): Observable<any>{
+    let updateRoute = this.createNote+'/'+note.id;
+    return this.http.patch<any>(updateRoute, {data:{note: note}}, this.httpHeaders)
+      .pipe(
+        catchError(this.handleError)
+      );
   }
 }

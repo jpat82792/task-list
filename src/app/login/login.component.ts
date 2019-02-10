@@ -28,6 +28,7 @@ export class LoginComponent implements OnInit {
   {
     this.data = resp;
     localStorage.setItem('jwtToken', this.data.token);
+    localStorage.setItem('user', this.data.user);
     this.router.navigate(['dashboard']);
     }, err=>{
       this.message = err.error.msg;

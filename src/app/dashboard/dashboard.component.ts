@@ -7,6 +7,7 @@ import { of } from 'rxjs/observable/of';
 import { EditorComponent } from '../editor/editor.component';
 import { TaskComponent } from '../task/task.component';
 import { Note } from '../classes/note';
+import { NoteService } from '../note.service';
 
 
 @Component({
@@ -17,8 +18,11 @@ import { Note } from '../classes/note';
 export class DashboardComponent implements OnInit, AfterViewInit {
 
   @ViewChild("findme") findme: TemplateRef<any>;
-  notes: Note[] = [new Note("list", "first list", "Do this&#x2404;&#x7;Do this after that", "list")];
-  constructor(private http: HttpClient, private router: Router) { }
+  notes: Note[] = [];
+  //[new Note(-1, "list", "first list", "Do this&#x2404;&#x7;Do this after that", 
+    //"list")];
+  constructor(private http: HttpClient, private router: Router, 
+    private noteService: NoteService) { }
 
   ngOnInit() {
     let httpOptions = {headers: new HttpHeaders({'Authorization': 
@@ -31,7 +35,25 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   }
   ngAfterViewInit(){
     console.log(this.findme);
+    this.getNotes();
   }
+
+  getNotes(): void{
+    var con = this;
+    this.noteService.getNotes().subscribe(result =>{
+      console.log("getNotes()");
+      result.notes.forEach((value)=>{
+        con.notes.push(new Note(value.note_id, value.type, 
+          value.title, value.body, value.type))
+      })
+    });
+  }
+
+  addNote(): void{
+    var con = this;
+    this.notes.push(new Note(-1, "list", "","","list"));
+  }
+
   //TODO: Add message for event that deleteIndex == -1
   deleteNote(note: Note): void{
     console.log("deleteNote()");

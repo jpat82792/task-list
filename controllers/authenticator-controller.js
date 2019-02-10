@@ -14,8 +14,9 @@ module.exports = function(app)
   app.use(passport.initialize());
   app.use(passport.session());
   var opts = {};
-  opts.jwtFromRequest = extractJwt.fromAuthHeaderWithScheme('jwt');
+  opts.jwtFromRequest = extractJwt.fromAuthHeaderWithScheme('JWT');
   opts.secretOrKey = dbConfig.secret;
+
 
   passport.use(new jwtStrategy(opts,
         function(jwt_payload, done){
@@ -25,7 +26,7 @@ module.exports = function(app)
             if(e.length ===1)
             {
               console.log("user exist");
-              return done(null, e[0]);
+              return done(null, e[0].user_id);
             }
             else{
               console.log("no user");
@@ -37,10 +38,11 @@ module.exports = function(app)
             return done(null, false, {message: 'Incorrect credentials.'});
           });
         }));
+  
   passport.serializeUser(function(user, done){
     console.log("serialize");
     console.log(user);
-    done(null, user);
+    done(null, user.user_id);
   });
   passport.deserializeUser(function(id, done){
     require('./user-controller.js').getUserById(id)

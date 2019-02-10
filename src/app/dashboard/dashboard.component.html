@@ -3,6 +3,7 @@
 </p>
 <app-editor></app-editor>
 <section class="notes-section">
+	<button (click)="addNote()">Add note</button>
 	<app-note *ngFor="let note of notes" [note]="note" [dash]="this">
 	</app-note>	
 </section>

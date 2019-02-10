@@ -1,7 +1,7 @@
 <div class="note">
   <button (click)="delete()" class="delete delete-note">x</button>
   <div class="tasks">
-  	<h1>{{note.title}}</h1>
+  	<input [(ngModel)]="note.title">
     <div class="tasks active">
     	<app-task *ngFor="let incompleteTask of incompleteTasks" [task]="incompleteTask" [incompleteTasks]="incompleteTasks" [completeTasks]=completeTasks></app-task>
     	<app-task-prompt [tasks]="incompleteTasks"></app-task-prompt>

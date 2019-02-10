@@ -17,8 +17,41 @@ router.get('/hey', (req, res) => {
 router.get('/login', (req, res)=>{
   res.render('login.html',{});
 });
+
+router.get('/notes', (req, res, next)=>{
+  var token = routingUtils.getToken(req.headers);
+  if(token){
+    noteController.apiGetNotes(req, res, next);
+  }
+  else{
+    res.sendStatus(401);
+  }
+})
+
+router.patch('/notes/:id', (req, res, next)=>{
+  var token = routingUtils.getToken(req.headers);
+  if(token){
+    noteController.apiUpdateNote(req,res,next); 
+  }
+  else{
+    console.log("error");
+    res.sendStatus(401);
+  }
+});
+
 router.post('/notes', (req, res, next) => {
-  noteController.apiSetNote(req,res,next);
+  var token = routingUtils.getToken(req.headers);
+
+  if(token){
+    noteController.apiSetNote(req,res,next); 
+  }
+  else{
+    console.log("error");
+    res.sendStatus(401);
+  }
+
+
+  
 });
 router.get('/loginState', passport.authenticate('jwt',{session: false}),
   function(req, res){
@@ -36,6 +69,7 @@ router.get('/loginState', passport.authenticate('jwt',{session: false}),
   }
 );
 router.post('/login', (req, res, next)=>{
+  console.log("/login");
   const body = req.body;
   var user = userController.getUser(req.body.username, req.body.username, req.body.password);
   user.then((e) => {
@@ -43,7 +77,7 @@ router.post('/login', (req, res, next)=>{
     console.log(e[0]);
         var token = jwt.sign(e[0], dbConfig.secret);
     // return the information including token as JSON
-    res.json({success: true, token: 'JWT ' + token, userId: e[0]});
+    res.json({success: true, token: 'JWT ' + token, user:JSON.stringify(e[0])});
   })
   .catch((e)=>{
    
