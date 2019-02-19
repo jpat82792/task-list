@@ -8,6 +8,7 @@ import { EditorComponent } from '../editor/editor.component';
 import { TaskComponent } from '../task/task.component';
 import { Note } from '../classes/note';
 import { NoteService } from '../note.service';
+import { NavbarComponent } from '../navbar/navbar.component';
 
 
 @Component({
@@ -49,7 +50,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     });
   }
 
-  addNote(): void{
+  public addNote(): void{
     var con = this;
     this.notes.push(new Note(-1, "list", "","","list"));
   }

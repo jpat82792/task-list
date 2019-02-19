@@ -12,6 +12,7 @@ import { EditorComponent } from './editor/editor.component';
 import { TaskComponent } from './task/task.component';
 import { NoteComponent } from './note/note.component';
 import { TaskPromptComponent } from './task-prompt/task-prompt.component';
+import { NavbarComponent } from './navbar/navbar.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { TaskPromptComponent } from './task-prompt/task-prompt.component';
     EditorComponent,
     TaskComponent,
     NoteComponent,
-    TaskPromptComponent
+    TaskPromptComponent,
+    NavbarComponent
   ],
   imports: [
   BrowserModule,
