@@ -30,7 +30,8 @@ import { NavbarComponent } from './navbar/navbar.component';
   BrowserModule,
   FormsModule,
   HttpClientModule,
-  TaskListRoutingModule
+  TaskListRoutingModule,
+  RouterModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
