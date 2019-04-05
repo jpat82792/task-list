@@ -14,9 +14,9 @@ import { NoteService } from '../note.service';
 export class NoteComponent implements OnInit {
 
 	@Input() note:Note;
-	incompleteTasks: Array<Task> = [];
-	completeTasks: Array<Task> = [];
+  @Input() noteEditStatus;
   @Input() dash: DashboardComponent;
+  categoryStatus: boolean;
   separator: string = "&#x2404;";
   falseParse: string = "&#x7;";
 
@@ -26,13 +26,14 @@ export class NoteComponent implements OnInit {
   ngOnInit(){
 
   	this.setTasks();
+    this.noteEditStatus = false;
   }
 
   recordTasks(){
     var con = this;
     this.note.body = "";
 
-    this.incompleteTasks.forEach(function(val){
+    this.note.incompleteTasks.forEach(function(val){
       if(val.complete){
         con.note.body+= val.body+con.separator;
         console.log(con.note.body);
@@ -43,7 +44,7 @@ export class NoteComponent implements OnInit {
       }
     });
 
-    this.completeTasks.forEach(function(val){
+    this.note.completeTasks.forEach(function(val){
       if(val.complete){
         con.note.body+= val.body+con.separator;
         console.log(con.note.body);
@@ -96,12 +97,17 @@ export class NoteComponent implements OnInit {
   		if(value.indexOf('&#x7;') !== -1 )
   		{
   			let body = value.split('&#x7;')[1];				
-  			con.completeTasks.push(new Task(true, body));
+  			con.note.completeTasks.push(new Task(true, body));
   		}
   		else{
   			console.log("Not complete");
-  			con.incompleteTasks.push(new Task(false, value));
+  			con.note.incompleteTasks.push(new Task(false, value));
   		}
   	});
   }
+  openCategoryComponent(){
+    console.log("openCategoryComponent()");
+    this.categoryStatus = !this.categoryStatus;
+  }
+
 }

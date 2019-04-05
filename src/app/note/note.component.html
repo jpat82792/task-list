@@ -1,14 +1,28 @@
-<div class="note">
-  <button (click)="delete()" class="delete delete-note">x</button>
+<div class="note" (click)="showPopup">
+  <div class="content-bar">
+    <input class="note-title" [(ngModel)]="note.title">
+    <button class="category-button" (click)="openCategoryComponent()"></button>
+    <div class="category-labels-container">
+      <span class=""></span>
+    </div>
+    <app-category [active]="categoryStatus" [possibleCategories]="dash.categories" ></app-category>
+
+  </div>
   <div class="tasks">
-  	<input [(ngModel)]="note.title">
+
     <div class="tasks active">
-    	<app-task *ngFor="let incompleteTask of incompleteTasks" [task]="incompleteTask" [incompleteTasks]="incompleteTasks" [completeTasks]=completeTasks></app-task>
-    	<app-task-prompt [tasks]="incompleteTasks"></app-task-prompt>
+      <label class="tasks-label active-label">active</label>
+    	<app-task *ngFor="let incompleteTask of note.incompleteTasks" [task]="incompleteTask" [incompleteTasks]="note.incompleteTasks" [completeTasks]=note.completeTasks [noteState]="note.state"></app-task>
+    	<app-task-prompt [tasks]="note.incompleteTasks"></app-task-prompt>
     </div>
     <div class="tasks inactive">
-    	<app-task *ngFor="let completeTask of completeTasks" [task]="completeTask"  [incompleteTasks]="incompleteTasks" [completeTasks]=completeTasks></app-task>
+      <label class="tasks-label inactive-label">complete</label>
+    	<app-task *ngFor="let completeTask of note.completeTasks" [task]="completeTask"  [incompleteTasks]="note.incompleteTasks" [completeTasks]="note.completeTasks" [noteState]="note.state"></app-task>
     </div>
   </div>
-  <button class="save note-save" (click)="save()">save</button>
+  <div class="content-bar">
+    <button class="save note-save" (click)="save()">save</button>
+    <button (click)="delete()" class="delete delete-note">delete</button>
+  </div>
+
 </div>

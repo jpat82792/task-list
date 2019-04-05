@@ -1,6 +1,6 @@
 <div class="task">
-  <input *ngIf="task.complete" (change)="toggleComplete($event)" class="task-status" type="checkbox" checked/>
-  <input *ngIf="!task.complete" (change)="toggleComplete($event)" class="task-status" type="checkbox"/>	
-  <input type="text" [(ngModel)]="task.body"/>
+  <input *ngIf="task.complete" (change)="toggleComplete($event)" class="task-status" type="checkbox" checked [disabled]="!this.noteState" (ngModelChange)="onTaskChange($event)"/>
+  <input *ngIf="!task.complete" (change)="toggleComplete($event)" class="task-status" type="checkbox" [disabled]="!this.noteState" (ngModelChange)="onTaskChange($event)"/>	
+  <input type="text" [(ngModel)]="task.body" [disabled]="!this.noteState" (ngModelChange)="onTaskChange($event)"/>
 </div>
 

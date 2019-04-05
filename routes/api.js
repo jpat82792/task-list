@@ -6,6 +6,7 @@ const passport = require('passport');
 const jwt = require('jsonwebtoken');
 const dbConfig = require('../constants/db-config');
 const routingUtils = require('../controllers/routingUtils');
+const categoryController = require('../controllers/category-controller.js');
 /* GET api listing. */
 
 
@@ -33,7 +34,24 @@ router.get('/hey', (req, res) => {
 router.get('/login', (req, res)=>{
   res.render('login.html',{});
 });
-
+router.get('/category', (req, res, next)=>{
+  let token = routingUtils.getToken(req.headers);
+  if(token){
+    categoryController.apiGetCategories(req, res, next);
+  }
+  else{
+    res.sendStatus(401);
+  }
+});
+router.post('/category', (req, res, next) =>{
+  let token = routingUtils.getToken(req.headers);
+  if(token){
+    categoryController.apiSetCategories(req, res, next);
+  }
+  else{
+    res.sendStatus(401);
+  }
+});
 router.get('/notes', (req, res, next)=>{
   var token = routingUtils.getToken(req.headers);
   if(token){

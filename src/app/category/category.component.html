@@ -1,0 +1,14 @@
+<div class="{{this.active ? 'category-component' : 'hide'}}">
+	<div class="categories-section">
+		<h3>categories</h3>
+		<select multiple class="">
+			<option *ngFor="let category of possibleCategories" data-category-id="category.category_id">
+				{{category.category}}
+			</option>
+		</select>
+	</div>
+	<div class="new-category-section">
+		<input type="text" class="new-category" [(ngModel)]="newCategory"/>
+		<button class="create-new-category" (click)="setCategory()"></button>
+	</div>
+</div>

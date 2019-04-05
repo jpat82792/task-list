@@ -1,8 +1,11 @@
 <app-navbar [dash]="this"></app-navbar>
-<app-editor></app-editor>
 <section class="notes-section">
 	<button (click)="addNote()">Add note</button>
-	<app-note *ngFor="let note of notes" [note]="note" [dash]="this">
+	<app-note (click)="openDialog(note)" *ngFor="let note of notes" [note]="note" [dash]="this" >
 	</app-note>	
 </section>
+<div role="dialog" aria-labelledby="createNewNote" aria-describedby="Create a new note" class="note-creation-dialog" #activeNote class="{{dialogState ? 'show-dialog':'hide-dialog'}} dialog">
+	<button (click)="closeDialog()">Close dialog</button>
+	<app-note id="active-note" [note]="this.dialogNote" [dash]="this"></app-note>
+</div>
 

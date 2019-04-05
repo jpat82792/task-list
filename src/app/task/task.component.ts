@@ -6,19 +6,20 @@ import {Task} from '../classes/task';
   templateUrl: './task.component.html',
   styleUrls: ['./task.component.less']
 })
-export class TaskComponent implements OnInit {
+export class TaskComponent implements OnInit, DoCheck {
 //Recompile
 	@Input() task: Task;
 	@Input() incompleteTasks: Task[];
 	@Input() completeTasks: Task[];
+  @Input() noteState: boolean;
 	
 	body: string;
 	complete: boolean;
   constructor() { }
 
   ngOnInit() {
-  	this.complete = this.task.complete;
-  	this.body = this.task.body;
+  	/*this.complete = this.task.complete;
+  	this.body = this.task.body;*/
   }
 
   toggleComplete(event)
@@ -52,6 +53,11 @@ export class TaskComponent implements OnInit {
         this.incompleteTasks.splice(indexToRemove, 1);
         this.completeTasks.push(this.task);
       }
+  }
+
+  onTaskChange(value){
+    console.log("onTaskChange()");
+    console.log(value);
   }
 
 }

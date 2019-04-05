@@ -9,7 +9,8 @@ import { TaskComponent } from '../task/task.component';
 import { Note } from '../classes/note';
 import { NoteService } from '../note.service';
 import { NavbarComponent } from '../navbar/navbar.component';
-
+import {Category} from '../classes/category';
+import {CategoryService} from '../category.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -20,10 +21,12 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
   @ViewChild("findme") findme: TemplateRef<any>;
   notes: Note[] = [];
-  //[new Note(-1, "list", "first list", "Do this&#x2404;&#x7;Do this after that", 
-    //"list")];
+  @ViewChild("activeNote") activeNote: TemplateRef<any>;
+  categories: Array<Category> = [];
+  dialogNote: Note = new Note(-1, "list","","","list"); 
+  dialogState: boolean = false;
   constructor(private http: HttpClient, private router: Router, 
-    private noteService: NoteService) { }
+    private noteService: NoteService, private categoryService: CategoryService) { }
 
   ngOnInit() {
     let httpOptions = {headers: new HttpHeaders({'Authorization': 
@@ -33,10 +36,24 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     }, err =>{
         this.router.navigate(['logon']);
     });
+
   }
   ngAfterViewInit(){
     console.log(this.findme);
+    console.log("Did I get the dialog?");
+    console.log(this.activeNote);
     this.getNotes();
+    this.getCategories();
+  }
+
+  getCategories(){
+    let con = this;
+    this.categoryService.getCategories().subscribe(result =>{
+      result.categories.forEach((value)=>{
+        con.categories.push(new Category(value.user_id, value.category, value.category_id))
+      });
+    console.log(this.categories);
+    });
   }
 
   getNotes(): void{
@@ -69,6 +86,25 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       }
     });
 
+  }
+
+  openDialog(note: Note): void{
+    console.log("openDialog()");
+    this.dialogNote = note;
+    this.dialogNote.state = true;
+    this.dialogState = true;
+  }
+
+  closeDialog(): void{
+    console.log("closeDialog()");
+
+    this.dialogNote.state = false;
+       // this.dialogNote = null;
+    this.dialogState = false;
+  }
+
+  setCategory(): void{
+    console.log("setCategory()");
   }
 
 }
