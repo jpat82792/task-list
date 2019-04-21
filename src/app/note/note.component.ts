@@ -18,7 +18,7 @@ export class NoteComponent implements OnInit {
   @Input() dash: DashboardComponent;
   categoryStatus: boolean;
   separator: string = "&#x2404;";
-  falseParse: string = "&#x7;";
+  completeMetaCharacter: string = "&#x7;";
 
   constructor(private noteService: NoteService) {
    }
@@ -30,28 +30,42 @@ export class NoteComponent implements OnInit {
   }
 
   recordTasks(){
-    var con = this;
+    this.clearTaskFromBody();
+    this.prepareTasksForRecording();
+  }
+
+  clearTaskFromBody(){
     this.note.body = "";
+  }
 
-    this.note.incompleteTasks.forEach(function(val){
-      if(val.complete){
-        con.note.body+= val.body+con.separator;
-        console.log(con.note.body);
-      }
-      else{
-        con.note.body += con.falseParse+ val.body+ con.separator;
-        console.log(con.note.body);  
-      }
+  prepareTasksForRecording(){
+    this.prepareIncompleteTasks();
+    this.prepareCompleteTasks();
+  }
+
+  prepareIncompleteTasks(){
+    let context = this;
+    this.note.incompleteTasks.forEach((task)=>{
+      context.writeTaskToNoteBody([task.body,context.separator]);
     });
+  }
 
-    this.note.completeTasks.forEach(function(val){
-      if(val.complete){
-        con.note.body+= val.body+con.separator;
-        console.log(con.note.body);
+  writeTaskToNoteBody(taskParts: string[]){
+    let context = this;
+    taskParts.forEach((value)=>{
+      context.note.body += value;
+    });
+  }
+
+  prepareCompleteTasks(){
+    let context = this;
+    let numberOfCompleteTasks = this.note.completeTasks.length-1
+    this.note.completeTasks.forEach((task, index)=>{
+      if(index === numberOfCompleteTasks){
+        context.writeTaskToNoteBody([context.completeMetaCharacter,task.body]);
       }
       else{
-        con.note.body += con.falseParse+ val.body+ con.separator;
-        console.log(con.note.body);  
+        context.writeTaskToNoteBody([context.completeMetaCharacter, task.body, context.separator])
       }
     });
   }
@@ -90,21 +104,56 @@ export class NoteComponent implements OnInit {
   }
 
   setTasks(){
-  	console.log("setTasks()");
-  	var con = this;
-  	var body: string[] = this.note.body.split("&#x2404;");
-  	body.forEach(function(value){
-  		if(value.indexOf('&#x7;') !== -1 )
-  		{
-  			let body = value.split('&#x7;')[1];				
-  			con.note.completeTasks.push(new Task(true, body));
-  		}
-  		else{
-  			console.log("Not complete");
-  			con.note.incompleteTasks.push(new Task(false, value));
-  		}
-  	});
+    console.log("setTasks()");
+    let tasks = this.splitBodyOnUnicodeSeparator("&#x2404;");
+    this.sortTasks(tasks);
   }
+
+  addToCompletedTasks(task: Task){
+    this.note.completeTasks.push(task);
+  }
+
+  addToIncompleteTasks(task :Task){
+    this.note.incompleteTasks.push(task);
+  }
+
+  trimCompleteMetaCharacter(value: string):string{
+    return value.split('&#x7;')[1];
+  }
+
+  taskIsComplete(task: string){
+    let parsedTask = this.trimCompleteMetaCharacter(task);
+    this.addToCompletedTasks(new Task(true, parsedTask));
+  }
+
+  taskIsIncomplete(task: string){
+    this.addToIncompleteTasks(new Task(false, task));
+  }
+
+  sortTasks(tasks: string[]){
+    let con = this;
+    tasks.forEach((task)=>{
+      con.sortTask(task);
+    });
+  }
+
+  isTaskComplete(task: string){
+    return task.indexOf('&#x7;') !== -1;
+  }
+
+  sortTask(task:string){
+    if(this.isTaskComplete(task)){
+      this.taskIsComplete(task);
+    }
+    else{
+      this.taskIsIncomplete(task);
+    }
+  }
+
+  splitBodyOnUnicodeSeparator(delimiter):string[]{
+    return this.note.body.split(delimiter);
+  }
+
   openCategoryComponent(){
     console.log("openCategoryComponent()");
     this.categoryStatus = !this.categoryStatus;
