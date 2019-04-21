@@ -21,7 +21,8 @@ export class CategoryComponent implements OnInit {
   setCategory(){
   	console.log("setCategory()");
   	this.categoryService.setCategories(this.newCategory).subscribe(ok =>{
-  		this.possibleCategories.push(new Category(ok.category.user_id, ok.category, ok.category_id));
+  		console.log(ok);
+  		this.possibleCategories.push(new Category(ok.category.user_id, ok.category.category, ok.category_id));
   	})
   }
 

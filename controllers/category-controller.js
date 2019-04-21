@@ -2,7 +2,7 @@ const pgp = require('pg-promise')();
 const dbConfig = require('../constants/db-config.js');
 const getCategoriesQuery = "SELECT * from categories where user_id=$(userId)";
 const setCategoryQuery = "INSERT INTO categories(user_id, category) VALUES ($(userId),"
- +"$(category))";
+ +"$(category)) RETURNING category_id";
  const deleteCategoryQuery = "DELETE FROM categories where category_id=$(category_id) "
  +"AND user_id=$(userId)";
  const db = pgp(dbConfig.database);
@@ -33,7 +33,9 @@ let apiGetCategories = function(req, res, next){
 
 let setCategory = async function(userId, category){
 	console.log("setCategory()");
-	return db.query(setCategoryQuery, category);
+	let insertCategory = {userId:userId, category:category}
+	console.log(insertCategory);
+	return db.query(setCategoryQuery, insertCategory);
 }
 
 let apiSetCategory =  (req, res, next)=>{
@@ -41,16 +43,21 @@ let apiSetCategory =  (req, res, next)=>{
 	if(req.headers.user !== undefined){
 		const user = JSON.parse(req.headers.user);
 		const category = req.body.data.category;
-		if(category.categoryId === -1){
-			setCategory(user.user_id, category.category).then(
+		console.log(category);
+		if(category.categoryId === undefined){
+			setCategory(user.user_id, category).then(
 				(results) =>{
-				res.status(200).json({success:true, category:result[0]});
+					console.log(results[0].category_id);
+				let savedCategory = {user_id:user.user_id, category:category, category_id:results[0].category_id };
+				res.status(200).json({success:true, category:savedCategory});
 			})
 			.catch((err)=>{
+				console.log(err);
 				res.status(400).json({success:false});
 			});
 		}
 		else{
+			console.log("patch");
 			//TODO ADD PATCH
 		}
 	}

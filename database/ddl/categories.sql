@@ -2,7 +2,7 @@ CREATE TABLE categories
 (
   category_id BIGSERIAL,
 	user_id BIGINT REFERENCES users(user_id),
-	cateGory VARCHAR(100) NOT NULL UNIQUE
+	category VARCHAR(100) NOT NULL UNIQUE
 );
 
 ALTER TABLE categories OWNER to task_list_admin;

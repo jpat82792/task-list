@@ -46,7 +46,7 @@ router.get('/category', (req, res, next)=>{
 router.post('/category', (req, res, next) =>{
   let token = routingUtils.getToken(req.headers);
   if(token){
-    categoryController.apiSetCategories(req, res, next);
+    categoryController.apiSetCategory(req, res, next);
   }
   else{
     res.sendStatus(401);
