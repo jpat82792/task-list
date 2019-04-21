@@ -1,6 +1,5 @@
 <app-navbar [dash]="this"></app-navbar>
 <section class="notes-section">
-	<button (click)="addNote()">Add note</button>
 	<app-note (click)="openDialog(note)" *ngFor="let note of notes" [note]="note" [dash]="this" >
 	</app-note>	
 </section>
