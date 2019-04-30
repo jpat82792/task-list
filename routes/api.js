@@ -77,6 +77,7 @@ router.post('/notes', (req, res, next) => {
   var token = routingUtils.getToken(req.headers);
 
   if(token){
+    console.log("/notes got called");
     noteController.apiSetNote(req,res,next); 
   }
   else{

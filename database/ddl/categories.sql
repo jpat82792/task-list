@@ -1,6 +1,6 @@
 CREATE TABLE categories
 (
-  category_id BIGSERIAL,
+  category_id BIGSERIAL PRIMARY KEY,
 	user_id BIGINT REFERENCES users(user_id),
 	category VARCHAR(100) NOT NULL UNIQUE
 );

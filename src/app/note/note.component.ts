@@ -70,27 +70,38 @@ export class NoteComponent implements OnInit {
     });
   }
 
-  save(): void
+  save()
   {
   	console.log("Note->Save()");
     this.recordTasks();
     var con = this;
-    let note = this.note;
-    if(note.id === -1){
-      con.postNote(con);
+    this.postOrPatchNote();
+
+  }
+
+  postOrPatchNote(){
+    if(this.isNewNote()){
+      this.postNote();
     }
     else{
-      con.patchNote(con);
+      this.patchNote();
     }
   }
 
-  patchNote(con: any): void{
+  isNewNote(){
+    return this.note.id === -1;
+  }
+
+  patchNote(): void{
+    let con = this;
     this.noteService.updateNote(this.note).subscribe(ok => {
       console.log("patchNote()");
     });
   }
 
-  postNote(con: any): void{
+  postNote(): void{
+    let con = this;
+    console.log('postNote()');
     this.noteService.setNote(this.note).subscribe(ok => {
       console.log(ok);
       con.note.id = ok.result.note_id;
@@ -104,7 +115,6 @@ export class NoteComponent implements OnInit {
   }
 
   setTasks(){
-    console.log("setTasks()");
     let tasks = this.splitBodyOnUnicodeSeparator("&#x2404;");
     this.sortTasks(tasks);
   }
@@ -155,7 +165,6 @@ export class NoteComponent implements OnInit {
   }
 
   openCategoryComponent(){
-    console.log("openCategoryComponent()");
     this.categoryStatus = !this.categoryStatus;
   }
 

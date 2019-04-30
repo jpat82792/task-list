@@ -5,12 +5,35 @@ const setCategoryQuery = "INSERT INTO categories(user_id, category) VALUES ($(us
  +"$(category)) RETURNING category_id";
  const deleteCategoryQuery = "DELETE FROM categories where category_id=$(category_id) "
  +"AND user_id=$(userId)";
+ const getMultipleCategoriesPrefix = "SELECT category_id FROM categories where user_id=$(userId)"
+ +" AND ";
  const db = pgp(dbConfig.database);
 
 
 let getCategories = async function(userId){
 	console.log("getCategories()");
 	return db.query(getCategoriesQuery, {userId:userId});
+}
+let buildWhereClause = (categories)=>{
+	let clause = '';
+	categories.forEach((value, index) =>{
+		if(index !== length-1){
+			clause += " category_id='"+value+"';"
+		}
+		else{
+			clause += " category_id='"+value+"' OR ";
+		}
+	});
+	return clause;
+}
+
+let getMultipleCategories = (t, userId, categories) =>{
+			console.log('getMultipleCategories');
+			console.log(categories);
+	let getMultipleCategories = getMultipleCategoriesPrefix + buildWhereClause(categories);
+
+		console.log(getMultipleCategories);
+	return t.query(getMultipleCategories, {userId:userId});
 }
 
 let apiGetCategories = function(req, res, next){
@@ -63,4 +86,6 @@ let apiSetCategory =  (req, res, next)=>{
 	}
 }
 
-module.exports = {apiGetCategories:apiGetCategories, apiSetCategory:apiSetCategory}
+module.exports = {apiGetCategories:apiGetCategories, 
+	apiSetCategory:apiSetCategory, 
+	getCategories:getCategories,getMultipleCategories:getMultipleCategories}

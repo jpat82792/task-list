@@ -27,6 +27,7 @@ export class LoginComponent implements OnInit {
   this.http.post('/api/login', this.loginData).subscribe(resp =>
   {
     this.data = resp;
+    console.log(resp);
     localStorage.setItem('jwtToken', this.data.token);
     localStorage.setItem('user', this.data.user);
     this.router.navigate(['dashboard']);
@@ -34,4 +35,5 @@ export class LoginComponent implements OnInit {
       this.message = err.error.msg;
     });
   }
+
 }

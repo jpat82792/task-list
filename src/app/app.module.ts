@@ -14,6 +14,7 @@ import { NoteComponent } from './note/note.component';
 import { TaskPromptComponent } from './task-prompt/task-prompt.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { CategoryComponent } from './category/category.component';
+import { CategoryListingComponent } from './category-listing/category-listing.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import { CategoryComponent } from './category/category.component';
     NoteComponent,
     TaskPromptComponent,
     NavbarComponent,
-    CategoryComponent
+    CategoryComponent,
+    CategoryListingComponent
   ],
   imports: [
   BrowserModule,

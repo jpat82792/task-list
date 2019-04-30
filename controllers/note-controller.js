@@ -1,10 +1,10 @@
 const pgp= require('pg-promise')();
 const dbConfig = require('../constants/db-config.js');
 const getNotesQuery = "SELECT * FROM notes where user_id=$(userId)";
-const setNoteQuery = "INSERT INTO notes(user_id, title, type, body) VALUES ($(userId),$(title),$(type),$(body)) RETURNING note_id;"
+const setNoteQuery = "INSERT INTO notes(user_id, title, body) VALUES ($(userId),$(title),$(body)) RETURNING note_id;"
 const updateNoteQuery = "UPDATE notes set body=$(body), title=$(title) WHERE "+
  "user_id=$(userId) AND note_id=$(note_id)";
-
+const categoryController = require('./category-controller.js');
  const deleteNoteQuery = " DELETE FROM notes where NOTE_ID=$(noteId) and "+
   " user_id=$(userId) ";
 
@@ -34,12 +34,44 @@ var apiGetNotes = function(req, res, next){
 	}
 }
 
+let setNotesQueryBuilder = async (t,userId, noteId, categories) =>{
+	let noteCategoryColumnSet = new pgp.helpers
+	.ColumnSet(['user_id', 'note_id', 'category_id'],{table:'notes_categories'});
+	let values = generateNoteCategoryValues(userId, noteId, categories);
+	let query = pgp.helpers.insert(values, noteCategoryColumnSet);
+	return t.query(query);
+
+}	
+let generateNoteCategoryValues = (userId, noteId, categories) =>{
+	let values = [];
+	console.log('generateNoteCategoryValues');
+	console.log(categories);
+	categories.forEach((value)=>{
+		values.push({user_id:userId, note_id:noteId, category_id: value});
+	});
+	return values;
+}
+
 var setNote =  async function(user, note){
 	console.log("setNote()");
-	const values = {userId: user.user_id, title: note.title, type: note.category, 
+	let result;
+	console.log(note);
+	const values = {userId: user.user_id, title: note.title, 
 		body: note.body};
-	var result = db.query(setNoteQuery, values);
-	return result;
+	//var result = db.query(setNoteQuery, values);
+	db.tx( t =>{
+		let noteId = t.one(setNoteQuery, values);
+		let categories = categoryController.getMultipleCategories(t,user.user_id, note.categories);
+		let notesCategories = setNotesQueryBuilder(t, user.user_id, noteId, note.categories);
+		return t.batch([noteId, categories, notesCategories]);
+	})
+	.then(data =>{
+		console.log("success");
+	})
+	.catch(error=>{
+		console.log(error);
+	})
+	
 }
 
 var apiSetNote = function(req, res, next){

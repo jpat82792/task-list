@@ -1,8 +1,8 @@
 <div class="{{this.active ? 'category-component' : 'hide'}}">
 	<div class="categories-section">
 		<h3>categories</h3>
-		<select multiple class="">
-			<option *ngFor="let category of possibleCategories" data-category-id="category.category_id">
+		<select (change)="categorySelectionChanged($event, this)" multiple class="">
+			<option *ngFor="let category of possibleCategories" data-category-id="category.category_id" value="{{category.category}}">
 				{{category.category}}
 			</option>
 		</select>
