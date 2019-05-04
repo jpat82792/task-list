@@ -35,6 +35,7 @@ var apiGetNotes = function(req, res, next){
 }
 
 let setNotesQueryBuilder = async (userId, noteId, categories) =>{
+	console.log('setNotesQueryBuilder');
 	let noteCategoryColumnSet = new pgp.helpers
 	.ColumnSet(['user_id', 'note_id', 'category_id'],{table:'notes_categories'});
 	let categoryIds = [];
@@ -68,13 +69,9 @@ var setNote =  function(user, note, res){
 		let noteId = t.one(setNoteQuery, values);
 		let categories = categoryController.getMultipleCategories(t, user.user_id,
 		 note.categories);
-		let notesCategories = setNotesQueryBuilder(t, user.user_id, noteId, 
-			note.categories);
 		return t.batch([noteId, categories]);
 	})
 	.then(data =>{
-		console.log("success");
-		console.log(data);
 		setNotesQueryBuilder(user.user_id, data[0].note_id, data[1]);
 		res.status(200).json({success:true, result:data[0].note_id});		
 	})
@@ -96,14 +93,8 @@ var apiSetNote = function(req, res, next){
 			setNote(user, note,res);
 		}
 		else{
-			updateNote(user, note).then((result)=>{
-				res.status(200).json({success:true});
-			})
-			.catch((err)=>{
-				res.status(400).json({success:false});
-			});
+			updateNote(user, note, res);
 		}
-
 	}
 	else{
 		console.log("no auth");
@@ -117,20 +108,39 @@ var apiUpdateNote = function(req, res, next){
 	const user = JSON.parse(req.headers.user);
 	console.log(note_id);
 	const note = req.body.data.note;
-	updateNote(user, note).then((result)=>{
-		res.status(201).json({success: true});
-	})
-	.catch((err)=>{
-		res.status(400).json({success: false});
-	});
+	updateNote(user, note,res);
 }
-
-var updateNote = async function(user, note){
+//TODO:Update note content 
+//TODO:clear removed categories
+//TODO:add new categories
+var updateNote = function(user, note, res){
 	console.log("updateNote()");
+	console.log(note);
 	const values = {userId: user.user_id, title: note.title, 
 		body: note.body, note_id: note.id};
-		var result = db.query(updateNoteQuery, values);
-		return result;
+		db.tx( t =>{
+			let update = db.query(updateNoteQuery, values);
+			let categories = categoryController
+				.getMultipleCategories(t,user.user_id,note.categories);
+			return t.batch([update, categories]);
+		})
+		.then(data =>{
+			console.log("updateNoteComplete");
+			console.log(data);
+			let queryResult = setNotesQueryBuilder(user.user_id, note.id, data[1]);
+			if(queryResult !== null){
+				res.status(200).json({success:true, result:data[0].note_id});				
+			}
+		})
+		.catch(err =>{
+			console.log(err);
+		});
+	
+}
+//getCategoriesToRemove
+let updateNoteCategories = () =>{
+	let categories = categoryController.getMultipleCategories(t, user.user_id,
+ 	note.categories);
 }
 
 var apiDeleteNote = function(req, res, next){

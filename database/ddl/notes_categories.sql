@@ -3,5 +3,6 @@ user_id BIGSERIAL NOT NULL REFERENCES users(user_id)  ON DELETE CASCADE,
 note_id BIGSERIAL NOT NULL REFERENCES notes(note_id)  ON DELETE CASCADE, 
 category_id BIGSERIAL NOT NULL REFERENCES categories(category_id) ON DELETE CASCADE,
 note_category_id BIGSERIAL,
-PRIMARY KEY (user_id, note_id, category_id, note_category_id)
+PRIMARY KEY (user_id, note_id, category_id, note_category_id),
+CONSTRAINT UNIQUE_NOTE_CATEGORY UNIQUE(user_id, note_id, category_id)
 );

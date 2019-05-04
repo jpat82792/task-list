@@ -7,6 +7,9 @@ const setCategoryQuery = "INSERT INTO categories(user_id, category) VALUES ($(us
  +"AND user_id=$(userId)";
  const getMultipleCategoriesPrefix = "SELECT category_id FROM categories where user_id=$(userId)"
  +" AND ";
+  const getMultipleCategoriesPrefixNoAnd = "SELECT category_id FROM categories where user_id=$(userId);";
+ const insertNewCategories = "INSERT INTO TABLE notes_categories WHERE NOT EXISTS ("+
+" SELECT * FROM notes_categories WHERE )"
  const db = pgp(dbConfig.database);
 
 
@@ -16,21 +19,40 @@ let getCategories = async function(userId){
 }
 let buildWhereClause = (categories)=>{
 	let clause = '';
-	categories.forEach((value, index) =>{
-		if(index === categories.length-1){
-			clause += " category='"+value+"';";
-		}
-		else{
-			clause += " category='"+value+"' OR ";
-		}
-	});
+	if(categories.length !== 0){
+		categories.forEach((value, index) =>{
+			if(index === categories.length-1){
+				clause += " category='"+value+"';";
+			}
+			else{
+				clause += " category='"+value+"' OR ";
+			}
+		});	
+	}
+	else{
+		clause = '';
+	}
+
 	return clause;
+}
+
+let getCategoriesToRemove = (userId, not) =>{
+	let noteCategoryColumnSet = new pgp.helpers
+	.ColumnSet(['user_id', 'note_id', 'category_id'],{table:'notes_categories'});
 }
 
 let getMultipleCategories = (t, userId, categories) =>{
 			console.log('getMultipleCategories');
 			console.log(categories);
-	let getMultipleCategories = getMultipleCategoriesPrefix + buildWhereClause(categories);
+			let getMultipleCategories;
+			if(categories.length ===0){
+				getMultipleCategories = getMultipleCategoriesPrefixNoAnd;
+			}
+			else{
+				getMultipleCategories = getMultipleCategoriesPrefix + 
+		  	buildWhereClause(categories);				
+			}
+
 
 		console.log(getMultipleCategories);
 	return t.query(getMultipleCategories, {userId:userId});
