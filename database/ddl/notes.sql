@@ -1,6 +1,6 @@
 CREATE TABLE notes
 (
-	user_id BIGINT REFERENCES users(user_id),
+	user_id BIGINT REFERENCES users(user_id) ON DELETE CASCADE,
 	title VARCHAR(300),
 	type VARCHAR(30) REFERENCES note_types(classification),
 	body TEXT,

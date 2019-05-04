@@ -1,6 +1,6 @@
 CREATE TABLE categories
 (
-  category_id BIGSERIAL PRIMARY KEY,
+  category_id BIGSERIAL PRIMARY KEY ON DELETE CASCADE,
 	user_id BIGINT REFERENCES users(user_id),
 	category VARCHAR(100) NOT NULL UNIQUE
 );
