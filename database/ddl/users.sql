@@ -4,7 +4,7 @@ CREATE TABLE users (
   first_name VARCHAR(35) DEFAULT NULL,
   last_name VARCHAR(35) DEFAULT NULL,
   password TEXT NOT NULL,
-  user_id BIGSERIAL PRIMARY KEY
+  user_id BIGSERIAL PRIMARY KEY UNIQUE
 );
 
 ALTER TABLE users OWNER TO task_list_admin;

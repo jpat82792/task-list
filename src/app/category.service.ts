@@ -20,7 +20,8 @@ export class CategoryService {
   	);
   }
   setCategories(category: string): Observable<any>{
-  	return this.http.post<any>(this.categoryRoute,{data:{category:category}}, ServiceConstants.httpHeaders)
+  	return this.http.post<any>(this.categoryRoute,
+      {data:{category:category}}, ServiceConstants.httpHeaders)
   	.pipe(
   		catchError(ServiceConstants.handleError)
   	);

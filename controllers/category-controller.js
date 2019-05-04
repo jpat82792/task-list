@@ -17,11 +17,11 @@ let getCategories = async function(userId){
 let buildWhereClause = (categories)=>{
 	let clause = '';
 	categories.forEach((value, index) =>{
-		if(index !== length-1){
-			clause += " category_id='"+value+"';"
+		if(index === categories.length-1){
+			clause += " category='"+value+"';";
 		}
 		else{
-			clause += " category_id='"+value+"' OR ";
+			clause += " category='"+value+"' OR ";
 		}
 	});
 	return clause;

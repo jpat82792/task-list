@@ -34,12 +34,17 @@ var apiGetNotes = function(req, res, next){
 	}
 }
 
-let setNotesQueryBuilder = async (t,userId, noteId, categories) =>{
+let setNotesQueryBuilder = async (userId, noteId, categories) =>{
 	let noteCategoryColumnSet = new pgp.helpers
 	.ColumnSet(['user_id', 'note_id', 'category_id'],{table:'notes_categories'});
-	let values = generateNoteCategoryValues(userId, noteId, categories);
+	let categoryIds = [];
+	categories.forEach(category =>{
+		categoryIds.push(category.category_id);
+	})
+	let values = generateNoteCategoryValues(userId, noteId, categoryIds);
+	console.log(values);
 	let query = pgp.helpers.insert(values, noteCategoryColumnSet);
-	return t.query(query);
+	return db.query(query);
 
 }	
 let generateNoteCategoryValues = (userId, noteId, categories) =>{
@@ -52,7 +57,7 @@ let generateNoteCategoryValues = (userId, noteId, categories) =>{
 	return values;
 }
 
-var setNote =  async function(user, note){
+var setNote =  function(user, note, res){
 	console.log("setNote()");
 	let result;
 	console.log(note);
@@ -61,15 +66,21 @@ var setNote =  async function(user, note){
 	//var result = db.query(setNoteQuery, values);
 	db.tx( t =>{
 		let noteId = t.one(setNoteQuery, values);
-		let categories = categoryController.getMultipleCategories(t,user.user_id, note.categories);
-		let notesCategories = setNotesQueryBuilder(t, user.user_id, noteId, note.categories);
-		return t.batch([noteId, categories, notesCategories]);
+		let categories = categoryController.getMultipleCategories(t, user.user_id,
+		 note.categories);
+		let notesCategories = setNotesQueryBuilder(t, user.user_id, noteId, 
+			note.categories);
+		return t.batch([noteId, categories]);
 	})
 	.then(data =>{
 		console.log("success");
+		console.log(data);
+		setNotesQueryBuilder(user.user_id, data[0].note_id, data[1]);
+		res.status(200).json({success:true, result:data[0].note_id});		
 	})
 	.catch(error=>{
 		console.log(error);
+		res.status(400).json({success:false});
 	})
 	
 }
@@ -82,12 +93,7 @@ var apiSetNote = function(req, res, next){
 		console.log(user.user_id);
 		const note = req.body.data.note;
 		if(note.id === -1){
-			setNote(user, note).then((result)=>{
-				res.status(200).json({success:true, result:result[0]});
-			})
-			.catch((err)=>{
-				res.status(400).json({success:false});
-			});
+			setNote(user, note,res);
 		}
 		else{
 			updateNote(user, note).then((result)=>{

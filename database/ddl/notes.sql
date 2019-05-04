@@ -4,7 +4,7 @@ CREATE TABLE notes
 	title VARCHAR(300),
 	type VARCHAR(30) REFERENCES note_types(classification),
 	body TEXT,
-	note_id BIGSERIAL PRIMARY KEY
+	note_id BIGSERIAL PRIMARY KEY UNIQUE 
 );
 
 ALTER TABLE notes OWNER TO task_list_admin;

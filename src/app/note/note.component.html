@@ -5,8 +5,8 @@
     <div class="category-labels-container">
       <span class=""></span>
     </div>
-    <app-category [active]="categoryStatus" [possibleCategories]="dash.categories" ></app-category>
-    <app-category-listing [categories]=""></app-category-listing>
+    <app-category [note]="note" [active]="categoryStatus" [possibleCategories]="dash.categories" ></app-category>
+    <app-category-listing [categories]="note.categories"></app-category-listing>
 
   </div>
   <div class="tasks">

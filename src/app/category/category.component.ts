@@ -31,6 +31,8 @@ export class CategoryComponent implements OnInit {
   categorySelectionChanged(event){
     console.log("categorySelectionChanged()");
     console.log(event.target.value);
+    console.log(event.srcElement.value);
+    this.note.categories.push(event.srcElement.value);
   }
 
 }
