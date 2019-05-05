@@ -28,36 +28,7 @@ var apiGetNotes = async function(req, res, next){
 			note, user.user_id);
 		  note.categories = await categoryController.getCategoriesByIds(categoryIds);		
 	}
-	result.forEach(note =>{
-
-	});
-	console.log(result[0]);
-	console.log(result[0].categories);
 	res.status(200).json(result);
-	/*if(user !== undefined){
-		getNotes(user.user_id).then((result)=>{
-			console.log('getNotes success');
-			console.log(result);
-			let newNotes = [];
-			result.forEach((note) =>{
-				let categoryIds = categoryController.getCategoryIdsByNote(
-					note, user.user_id);
-				note.categories = categoryController.getCategoriesByIds(categoryIds);
-			});
-			console.log('after forEach()');
-			
-			let okay= await result;
-			console.log(okay)
-			res.status(200).json({notes: okay});
-		})
-		.catch((err)=>{
-			console.error(err);
-			res.sendStatus(500);
-		});
-	}
-	else{
-		res.sendStatus(400);
-	}*/
 }
 
 let setNotesQueryBuilder = async (userId, noteId, categories) =>{
