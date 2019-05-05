@@ -10,28 +10,54 @@ const categoryController = require('./category-controller.js');
 
 const db = pgp(dbConfig.database);
 
-var getNotes = async function(userId){
+var getNotes = async function(userId, note){
 	console.log("getNotes()");
 	console.log(userId);
-	var result = db.query(getNotesQuery,{userId: userId});
-	return result;
+	let result = db.query(getNotesQuery,{userId: userId});
+	return await result;
 }
 
-var apiGetNotes = function(req, res, next){
+var apiGetNotes = async function(req, res, next){
 	console.log("apiGetNotes()");
 	let user = JSON.parse(req.headers.user);
 	console.log(user);
-	if(user !== undefined){
+	let result = await getNotes(user.user_id);
+	for(let i = 0; i < result.length; i++){
+		let note = result[i];
+		let categoryIds = await categoryController.getCategoryIdsByNote(
+			note, user.user_id);
+		  note.categories = await categoryController.getCategoriesByIds(categoryIds);		
+	}
+	result.forEach(note =>{
+
+	});
+	console.log(result[0]);
+	console.log(result[0].categories);
+	res.status(200).json(result);
+	/*if(user !== undefined){
 		getNotes(user.user_id).then((result)=>{
-			res.status(200).json({notes: result});
+			console.log('getNotes success');
+			console.log(result);
+			let newNotes = [];
+			result.forEach((note) =>{
+				let categoryIds = categoryController.getCategoryIdsByNote(
+					note, user.user_id);
+				note.categories = categoryController.getCategoriesByIds(categoryIds);
+			});
+			console.log('after forEach()');
+			
+			let okay= await result;
+			console.log(okay)
+			res.status(200).json({notes: okay});
 		})
 		.catch((err)=>{
+			console.error(err);
 			res.sendStatus(500);
 		});
 	}
 	else{
 		res.sendStatus(400);
-	}
+	}*/
 }
 
 let setNotesQueryBuilder = async (userId, noteId, categories) =>{
