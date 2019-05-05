@@ -1,7 +1,4 @@
-const pgp = require('pg-promise')();
-const connString = 'postgres://task_list_admin:tlIsBest21@172.17.0.2:5432/task_list';
-
-const db = pgp(connString);
+const db = require('./database-controller.js').db;;
 const setUserQuery = "INSERT INTO users(username, email, password) VALUES($(username), $(email), crypt($(password), gen_salt('bf')) ) RETURNING username;"
 const getUserQuery = "SELECT * from users where username = $(username) OR email=$(username) AND password = crypt($(password), gen_salt('bf'));";
 const getUserByIdQuery = "SELECT * FROM users where user_id=$(id)";

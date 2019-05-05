@@ -14,7 +14,7 @@ const setCategoryQuery = "INSERT INTO categories(user_id, category) VALUES ($(us
   const getMultipleCategoriesPrefixNoAnd = "SELECT category_id FROM categories where user_id=$(userId);";
  const insertNewCategories = "INSERT INTO TABLE notes_categories WHERE NOT EXISTS ("+
 " SELECT * FROM notes_categories WHERE )"
- const db = pgp(dbConfig.database);
+ const db = require('./database-controller.js').db;
 /*notes_categories*/
 	let getCategoryIdsByNote = async (note, userId) =>{
 		console.log('getCategoryIdsByNote()');

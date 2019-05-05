@@ -8,7 +8,7 @@ const categoryController = require('./category-controller.js');
  const deleteNoteQuery = " DELETE FROM notes where NOTE_ID=$(noteId) and "+
   " user_id=$(userId) ";
 
-const db = pgp(dbConfig.database);
+const db = require('./database-controller.js').db;
 
 var getNotes = async function(userId, note){
 	console.log("getNotes()");
@@ -41,7 +41,6 @@ let setNotesQueryBuilder = async (userId, noteId, categories) =>{
 		categoryIds.push(category.category_id);
 	});
 	let values = generateNoteCategoryValues(userId, noteId, categoryIds);
-	console.log(values);
 	let query = pgp.helpers.insert(values, noteCategoryColumnSet);
 	return db.query(query);
 
@@ -49,7 +48,6 @@ let setNotesQueryBuilder = async (userId, noteId, categories) =>{
 let generateNoteCategoryValues = (userId, noteId, categories) =>{
 	let values = [];
 	console.log('generateNoteCategoryValues');
-	console.log(categories);
 	categories.forEach((value)=>{
 		values.push({user_id:userId, note_id:noteId, category_id: value});
 	});
