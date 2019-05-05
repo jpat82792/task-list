@@ -26,7 +26,7 @@ var apiGetNotes = async function(req, res, next){
 		let note = result[i];
 		let categoryIds = await categoryController.getCategoryIdsByNote(
 			note, user.user_id);
-		  note.categories = await categoryController.getCategoriesByIds(categoryIds);		
+		note.categories = await categoryController.getCategoriesByIds(categoryIds);		
 	}
 	res.status(200).json(result);
 }
@@ -35,10 +35,11 @@ let setNotesQueryBuilder = async (userId, noteId, categories) =>{
 	console.log('setNotesQueryBuilder');
 	let noteCategoryColumnSet = new pgp.helpers
 	.ColumnSet(['user_id', 'note_id', 'category_id'],{table:'notes_categories'});
+	let okay =await categoryController.clearNoteCategories(noteId, userId);
 	let categoryIds = [];
 	categories.forEach(category =>{
 		categoryIds.push(category.category_id);
-	})
+	});
 	let values = generateNoteCategoryValues(userId, noteId, categoryIds);
 	console.log(values);
 	let query = pgp.helpers.insert(values, noteCategoryColumnSet);

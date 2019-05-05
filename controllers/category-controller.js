@@ -8,6 +8,7 @@ const setCategoryQuery = "INSERT INTO categories(user_id, category) VALUES ($(us
  +"$1 RETURNING category_id";
  const deleteCategoryQuery = "DELETE FROM categories where category_id=$(category_id) "
  +"AND user_id=$(userId)";
+ const deleteNotesCategoriesQuery = "DELETE FROM notes_categories where note_id=$(noteId) and user_id=$(userId);";
  const getMultipleCategoriesPrefix = "SELECT category_id FROM categories where user_id=$(userId)"
  +" AND ";
   const getMultipleCategoriesPrefixNoAnd = "SELECT category_id FROM categories where user_id=$(userId);";
@@ -18,6 +19,10 @@ const setCategoryQuery = "INSERT INTO categories(user_id, category) VALUES ($(us
 	let getCategoryIdsByNote = async (note, userId) =>{
 		console.log('getCategoryIdsByNote()');
 		return await db.query(getCategoryIdsByNoteQuery, {noteId:note.note_id,userId:userId})
+	}
+	let clearNoteCategories = async (note, userId) =>{
+		console.log("clearNoteCategories");
+		return await db.query(deleteNotesCategoriesQuery,{noteId:note,userId:userId});
 	}
 	let getCategoriesByIds = async (categories) =>{
 		console.log('getCategoriesByIds()');
@@ -129,4 +134,5 @@ module.exports = {apiGetCategories:apiGetCategories,
 	apiSetCategory:apiSetCategory, 
 	getCategories:getCategories,getMultipleCategories:getMultipleCategories,
 getCategoryIdsByNote:getCategoryIdsByNote,
-getCategoriesByIds:getCategoriesByIds}
+getCategoriesByIds:getCategoriesByIds,
+clearNoteCategories:clearNoteCategories}
