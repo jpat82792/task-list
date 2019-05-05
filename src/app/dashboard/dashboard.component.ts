@@ -77,8 +77,6 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       for(let i =0; i < result.length; i++){
         let value = result[i];
         let temp = con.parseCategories(value.categories);
-        console.log('temp');
-        console.log(temp);
         con.notes.push(new Note(value.note_id, value.type, 
           value.title, value.body,
           temp));

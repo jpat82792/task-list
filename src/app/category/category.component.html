@@ -7,8 +7,14 @@
 			</option>
 		</select>
 	</div>
+	<section class="alter-category-section">
+		<button (click)="updateCategory(true)">Add</button>
+		<button (click)="removeCategory(false)">Remove</button>
+	</section>
 	<div class="new-category-section">
 		<input type="text" class="new-category" [(ngModel)]="newCategory"/>
-		<button class="create-new-category" (click)="setCategory()"></button>
+		<button class="create-new-category" (click)="setCategory()">
+			create new category
+		</button>
 	</div>
 </div>
