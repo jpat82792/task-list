@@ -11,6 +11,8 @@ export class CategoryListingComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
+  	console.log('CategoryListingComponent');
+  	console.log(this.categories);
   }
 
 }

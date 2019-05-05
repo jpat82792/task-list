@@ -56,20 +56,41 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     });
   }
 
+  parseCategories(unparsedCategories): string[] {
+    console.log('parseCategories()');
+    let parsedCategories = [];
+    for(let i = 0 ; i < unparsedCategories.length; i++){
+      let category = unparsedCategories[i];
+      console.log(category[0].category);
+      parsedCategories.push(category[0].category);
+      console.log(parsedCategories);
+    }
+    console.log(parsedCategories);
+    return parsedCategories;
+  }
+
   getNotes(): void{
     var con = this;
     this.noteService.getNotes().subscribe(result =>{
       console.log("getNotes()");
-      result.notes.forEach((value)=>{
+      console.log(result);
+      for(let i =0; i < result.length; i++){
+        let value = result[i];
+        let temp = con.parseCategories(value.categories);
+        console.log('temp');
+        console.log(temp);
         con.notes.push(new Note(value.note_id, value.type, 
-          value.title, value.body, value.type))
-      })
+          value.title, value.body,
+          temp));
+        //con.notes[i].categories = temp;
+      }
+      console.log(con.notes);
     });
   }
 
   public addNote(): void{
     var con = this;
-    this.notes.push(new Note(-1, "list", "","","list"));
+    this.notes.push(new Note(-1, "list", "","",[]));
   }
 
   //TODO: Add message for event that deleteIndex == -1
